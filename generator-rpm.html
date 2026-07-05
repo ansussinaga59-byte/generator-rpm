@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generator RPM — Rencana Pembelajaran Mendalam</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --ink:#1B2620;
+    --paper:#F6F4EE;
+    --card:#FFFFFF;
+    --line:#DAD6C6;
+    --brass:#A9812F;
+    --teal:#2E5C57;
+    --teal-dark:#1E3F3B;
+    --muted:#6B7268;
+    --danger:#B23A3A;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.5;
+  }
+  .shell{
+    max-width:1280px;
+    margin:0 auto;
+    padding:28px 20px 80px;
+  }
+  header.top{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:16px;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:18px;
+    margin-bottom:28px;
+    flex-wrap:wrap;
+  }
+  .brand{
+    font-family:'Source Serif 4', serif;
+  }
+  .brand .eyebrow{
+    font-family:'Inter',sans-serif;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--brass);
+    font-weight:600;
+    margin-bottom:4px;
+  }
+  .brand h1{
+    margin:0;
+    font-size:clamp(24px,3.4vw,34px);
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .brand p{
+    margin:6px 0 0;
+    color:var(--muted);
+    font-size:14.5px;
+    max-width:560px;
+  }
+  .badge-count{
+    font-family:'Source Serif 4',serif;
+    text-align:right;
+    color:var(--teal-dark);
+  }
+  .badge-count .num{
+    font-size:38px;
+    font-weight:700;
+    display:block;
+    line-height:1;
+  }
+  .badge-count .lbl{
+    font-family:'Inter',sans-serif;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    color:var(--muted);
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns: minmax(340px, 460px) 1fr;
+    gap:24px;
+    align-items:start;
+  }
+  @media (max-width: 980px){
+    .grid{grid-template-columns:1fr;}
+  }
+
+  .panel{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+  }
+  .panel + .panel{ margin-top:20px; }
+
+  .sec-title{
+    font-family:'Source Serif 4',serif;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--teal-dark);
+    font-weight:700;
+    margin:0 0 16px;
+    padding-bottom:8px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .sec-title .roman{
+    font-family:'Source Serif 4',serif;
+    color:var(--brass);
+  }
+
+  label{
+    display:block;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--ink);
+    margin:14px 0 5px;
+  }
+  label.req::after{
+    content:" *";
+    color:var(--danger);
+  }
+  label:first-of-type{margin-top:0;}
+
+  input[type=text], input[type=number], select, textarea{
+    width:100%;
+    padding:9px 11px;
+    border:1px solid var(--line);
+    border-radius:7px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    background:#FCFBF8;
+    color:var(--ink);
+  }
+  textarea{ resize:vertical; min-height:64px; }
+  input:focus, select:focus, textarea:focus{
+    outline:2px solid var(--teal);
+    outline-offset:1px;
+    border-color:var(--teal);
+  }
+
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .hint{ font-size:11.5px; color:var(--muted); margin-top:4px; }
+
+  .chip-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:8px;
+  }
+  .chip{
+    display:flex; align-items:flex-start; gap:8px;
+    border:1px solid var(--line);
+    border-radius:7px;
+    padding:8px 10px;
+    font-size:13px;
+    cursor:pointer;
+    background:#FCFBF8;
+  }
+  .chip input{ width:auto; margin-top:2px; }
+  .chip.checked{
+    border-color:var(--teal);
+    background:#EEF4F1;
+  }
+
+  .pertemuan-card{
+    border:1px solid var(--line);
+    border-radius:7px;
+    padding:10px 12px;
+    margin-top:8px;
+    background:#FCFBF8;
+  }
+  .pertemuan-card .pnum{
+    font-family:'Source Serif 4',serif;
+    font-weight:700;
+    color:var(--teal-dark);
+    font-size:13px;
+    margin-bottom:4px;
+  }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    border:none;
+    border-radius:8px;
+    padding:12px 18px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+  }
+  .btn-primary{ background:var(--teal-dark); color:#fff; width:100%; margin-top:20px; }
+  .btn-primary:hover{ background:var(--teal); }
+  .btn-copy{ background:var(--brass); color:#fff; }
+  .btn-copy:hover{ background:#8f6d27; }
+  .btn-ghost{ background:transparent; color:var(--teal-dark); border:1px solid var(--line); }
+  .btn-ghost:hover{ background:#F0EEE6; }
+
+  .toolbar{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px; flex-wrap:wrap; margin-bottom:14px;
+  }
+  .toolbar .status{ font-size:12.5px; color:var(--muted); }
+  .toolbar .actions{ display:flex; gap:8px; }
+
+  .empty-state{
+    text-align:center;
+    padding:70px 20px;
+    color:var(--muted);
+  }
+  .empty-state .mark{
+    font-family:'Source Serif 4',serif;
+    font-size:44px;
+    color:var(--brass);
+    margin-bottom:10px;
+  }
+  .empty-state h3{
+    font-family:'Source Serif 4',serif;
+    color:var(--ink);
+    margin:0 0 6px;
+  }
+  .empty-state p{ max-width:340px; margin:0 auto; font-size:13.5px; }
+
+  /* ===== Dokumen RPM (preview) ===== */
+  #rpmOutput{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:40px 44px;
+    font-family:'Source Serif 4', serif;
+    color:#111;
+    font-size:14px;
+    line-height:1.65;
+  }
+  #rpmOutput h2.doc-title{
+    text-align:center;
+    font-size:17px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    margin:0 0 4px;
+  }
+  #rpmOutput p.doc-sub{
+    text-align:center;
+    margin:0 0 22px;
+    font-size:13px;
+    color:#444;
+  }
+  #rpmOutput table.idtable{
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:22px;
+    font-size:13.5px;
+  }
+  #rpmOutput table.idtable td{
+    border:1px solid #bbb;
+    padding:6px 10px;
+    vertical-align:top;
+  }
+  #rpmOutput table.idtable td.label{
+    width:220px;
+    background:#F1EFE8;
+    font-weight:600;
+  }
+  #rpmOutput h3.bab{
+    font-size:14.5px;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    border-bottom:1.5px solid #222;
+    padding-bottom:5px;
+    margin:26px 0 10px;
+    color:#173430;
+  }
+  #rpmOutput h4.sub{
+    font-size:13.5px;
+    margin:14px 0 4px;
+    font-weight:700;
+  }
+  #rpmOutput p{ margin:4px 0 8px; text-align:justify; }
+  #rpmOutput ul{ margin:4px 0 10px; padding-left:22px; }
+  #rpmOutput li{ margin-bottom:4px; text-align:justify; }
+  #rpmOutput table.grid-table{
+    width:100%;
+    border-collapse:collapse;
+    margin:8px 0 16px;
+    font-size:13px;
+  }
+  #rpmOutput table.grid-table th, #rpmOutput table.grid-table td{
+    border:1px solid #999;
+    padding:6px 8px;
+    text-align:left;
+    vertical-align:top;
+  }
+  #rpmOutput table.grid-table th{
+    background:#EDEAE0;
+    font-weight:700;
+  }
+  #rpmOutput .meeting-block{
+    border-left:3px solid var(--brass);
+    padding:2px 0 2px 14px;
+    margin:14px 0;
+  }
+  #rpmOutput .meeting-block h4{
+    margin:0 0 6px;
+    font-size:13.5px;
+    color:#5c421b;
+  }
+  #rpmOutput .sig-wrap{
+    margin-top:44px;
+    font-size:13.5px;
+  }
+  #rpmOutput .sig-date{
+    text-align:right;
+    margin-bottom:18px;
+  }
+  #rpmOutput table.sig-table{
+    width:100%;
+    border-collapse:collapse;
+  }
+  #rpmOutput table.sig-table td{
+    width:50%;
+    vertical-align:top;
+    padding:0 10px;
+  }
+  #rpmOutput table.sig-table td.right{ text-align:left; }
+  #rpmOutput .sig-space{ height:56px; }
+  #rpmOutput .sig-name{ font-weight:700; text-decoration:underline; }
+
+  @media print{
+    .panel, header.top, .toolbar{ display:none; }
+    body{ background:#fff; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="top">
+    <div class="brand">
+      <div class="eyebrow">Kurikulum Nasional · Deep Learning</div>
+      <h1>Generator RPM</h1>
+      <p>Menyusun Rencana Pembelajaran Mendalam (RPM) — Identifikasi, Desain Pembelajaran, Pengalaman Belajar, dan Asesmen — siap disalin ke Word atau Google Dokumen.</p>
+    </div>
+    <div class="badge-count">
+      <span class="num" id="meetingCountBadge">0</span>
+      <span class="lbl">Pertemuan disusun</span>
+    </div>
+  </header>
+
+  <div class="grid">
+
+    <!-- FORM -->
+    <div>
+      <form id="rpmForm">
+
+        <div class="panel">
+          <p class="sec-title"><span class="roman">I.</span> Identitas</p>
+
+          <label class="req">Nama Satuan Pendidikan</label>
+          <input type="text" id="namaSekolah" placeholder="cth. SMA Negeri 41 Jakarta" required>
+
+          <div class="row2">
+            <div>
+              <label class="req">Nama Guru</label>
+              <input type="text" id="namaGuru" required>
+            </div>
+            <div>
+              <label class="req">NIP Guru</label>
+              <input type="text" id="nipGuru" required>
+            </div>
+          </div>
+
+          <div class="row2">
+            <div>
+              <label class="req">Nama Kepala Sekolah</label>
+              <input type="text" id="namaKepsek" required>
+            </div>
+            <div>
+              <label class="req">NIP Kepala Sekolah</label>
+              <input type="text" id="nipKepsek" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <p class="sec-title"><span class="roman">II.</span> Kelas &amp; Mata Pelajaran</p>
+
+          <div class="row2">
+            <div>
+              <label class="req">Jenjang Pendidikan</label>
+              <select id="jenjang" required>
+                <option value="">Pilih jenjang</option>
+                <option value="SD">SD</option>
+                <option value="SMP">SMP</option>
+                <option value="SMA">SMA</option>
+              </select>
+            </div>
+            <div>
+              <label class="req">Kelas</label>
+              <select id="kelas" required>
+                <option value="">Pilih jenjang dahulu</option>
+              </select>
+            </div>
+          </div>
+
+          <label class="req">Mata Pelajaran</label>
+          <input type="text" id="mapel" placeholder="cth. Informatika, Matematika" required>
+
+          <label class="req">Capaian Pembelajaran (CP)</label>
+          <textarea id="cp" placeholder="Tempel/tulis rumusan Capaian Pembelajaran"></textarea>
+
+          <label class="req">Materi Pembelajaran</label>
+          <textarea id="materi" placeholder="cth. Fungsi Kuadrat, Analisis Data dengan Pandas"></textarea>
+        </div>
+
+        <div class="panel">
+          <p class="sec-title"><span class="roman">III.</span> Struktur Pertemuan</p>
+
+          <div class="row2">
+            <div>
+              <label class="req">Jumlah Pertemuan</label>
+              <input type="number" id="jumlahPertemuan" min="1" max="20" value="1">
+            </div>
+            <div>
+              <label class="req">Durasi Setiap Pertemuan</label>
+              <input type="text" id="durasi" placeholder="cth. 2 x 45 menit">
+            </div>
+          </div>
+
+          <label class="req">Praktik Pedagogis per Pertemuan</label>
+          <div class="hint">Bisa berbeda untuk tiap pertemuan.</div>
+          <div id="pertemuanContainer"></div>
+        </div>
+
+        <div class="panel">
+          <p class="sec-title"><span class="roman">IV.</span> Dimensi Lulusan</p>
+          <div class="hint">Pilih satu atau lebih dimensi yang menjadi fokus capaian pada RPM ini.</div>
+          <div class="chip-grid" id="dimensiGrid"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Buat RPM</button>
+      </form>
+    </div>
+
+    <!-- OUTPUT -->
+    <div>
+      <div class="panel" style="padding:16px;">
+        <div class="toolbar">
+          <div class="status" id="statusText">Belum ada RPM yang dibuat.</div>
+          <div class="actions">
+            <button type="button" class="btn btn-copy" id="copyBtn" style="display:none;">Salin RPM</button>
+            <button type="button" class="btn btn-ghost" id="printBtn" style="display:none;">Cetak / PDF</button>
+          </div>
+        </div>
+
+        <div id="emptyState" class="empty-state">
+          <div class="mark">§</div>
+          <h3>Dokumen RPM akan tampil di sini</h3>
+          <p>Lengkapi formulir di sebelah kiri, lalu klik "Buat RPM". Hasilnya bisa langsung disalin ke Word atau Google Dokumen dengan format rapi.</p>
+        </div>
+
+        <div id="rpmOutput" style="display:none;"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const kelasByJenjang = {
+  SD: ['1','2','3','4','5','6'],
+  SMP: ['7','8','9'],
+  SMA: ['10','11','12']
+};
+
+const dimensiList = [
+  'Keimanan & Ketakwaan','Kewargaan','Penalaran Kritis','Kreativitas',
+  'Kolaborasi','Kemandirian','Kesehatan','Komunikasi'
+];
+
+const dimensiInfo = {
+  'Keimanan & Ketakwaan':'peserta didik menunjukkan penghayatan nilai-nilai keagamaan dan moral dalam sikap serta perilaku selama proses pembelajaran berlangsung.',
+  'Kewargaan':'peserta didik menunjukkan kesadaran sebagai warga yang bertanggung jawab, menghargai keberagaman, dan berpartisipasi aktif dalam kegiatan bersama.',
+  'Penalaran Kritis':'peserta didik mampu menganalisis informasi secara logis, mengajukan pertanyaan bermakna, dan mengambil keputusan berdasarkan bukti dan data.',
+  'Kreativitas':'peserta didik mampu menghasilkan gagasan, karya, atau solusi yang orisinal dalam menyelesaikan permasalahan pembelajaran.',
+  'Kolaborasi':'peserta didik mampu bekerja sama secara efektif dalam kelompok untuk mencapai tujuan belajar bersama.',
+  'Kemandirian':'peserta didik menunjukkan inisiatif, tanggung jawab, dan kemampuan mengelola diri sepanjang proses belajar.',
+  'Kesehatan':'peserta didik menerapkan kebiasaan hidup sehat secara fisik dan mental selama aktivitas pembelajaran.',
+  'Komunikasi':'peserta didik mampu menyampaikan gagasan secara jelas, santun, dan efektif baik lisan maupun tulisan.'
+};
+
+const practiceOptions = ['Inquiri','PjBL','Diskusi','Kolaboratif','Problem Solving','Game Based Learning','Station Learning'];
+
+const practiceInfo = {
+  'Inquiri': {
+    ringkas:'peserta didik merumuskan pertanyaan, menyelidiki, dan menemukan konsep secara mandiri maupun berkelompok',
+    memahami:'menggali fenomena atau permasalahan terkait materi melalui pertanyaan pemantik dan pengumpulan data awal',
+    aplikasi:'menyelidiki lebih lanjut, menguji dugaan, dan menyimpulkan temuan berdasarkan hasil penyelidikan',
+    asesmen:'lembar observasi proses inkuiri dan rubrik penilaian temuan'
+  },
+  'PjBL': {
+    ringkas:'peserta didik belajar melalui perancangan dan penyelesaian proyek nyata yang relevan dengan materi',
+    memahami:'mengkaji konsep inti materi sebagai dasar untuk merancang proyek',
+    aplikasi:'merancang, melaksanakan, dan menyelesaikan proyek yang menghasilkan produk nyata sesuai materi',
+    asesmen:'rubrik penilaian proses dan produk proyek'
+  },
+  'Diskusi': {
+    ringkas:'peserta didik bertukar pikiran secara terstruktur untuk memperdalam pemahaman konsep',
+    memahami:'mengkaji konsep materi melalui bacaan/paparan singkat sebagai bahan diskusi',
+    aplikasi:'berdiskusi kelompok atau kelas untuk bertukar pendapat dan menyusun kesimpulan bersama',
+    asesmen:'lembar observasi partisipasi dan rubrik kualitas argumen'
+  },
+  'Kolaboratif': {
+    ringkas:'peserta didik bekerja sama dalam tim untuk menyelesaikan tugas belajar bersama',
+    memahami:'mempelajari pembagian peran dan target kerja kelompok sesuai materi',
+    aplikasi:'bekerja dalam kelompok untuk menyelesaikan tugas dan menyusun hasil kerja bersama',
+    asesmen:'rubrik penilaian kerja kelompok dan kontribusi individu'
+  },
+  'Problem Solving': {
+    ringkas:'peserta didik menyelesaikan permasalahan nyata melalui tahapan pemecahan masalah yang sistematis',
+    memahami:'mengidentifikasi dan merumuskan permasalahan terkait materi secara jelas',
+    aplikasi:'merumuskan alternatif solusi, menguji, dan menentukan solusi yang paling efektif',
+    asesmen:'rubrik penilaian proses dan ketepatan solusi'
+  },
+  'Game Based Learning': {
+    ringkas:'peserta didik belajar melalui permainan edukatif untuk memperkuat pemahaman konsep',
+    memahami:'mempelajari aturan dan konsep dasar materi melalui simulasi ringan',
+    aplikasi:'terlibat dalam permainan atau kuis edukatif berbasis materi secara aktif dan menyenangkan',
+    asesmen:'catatan skor permainan dan observasi pemahaman konsep'
+  },
+  'Station Learning': {
+    ringkas:'peserta didik berpindah antar pos belajar (station) untuk mendalami materi dari berbagai sudut pandang',
+    memahami:'mempelajari instruksi dan target belajar di setiap pos/station',
+    aplikasi:'berpindah antar pos belajar yang masing-masing menyajikan aktivitas berbeda terkait materi',
+    asesmen:'lembar checklist penyelesaian tiap station dan rubrik hasil kerja'
+  }
+};
+
+const digitalByJenjang = {
+  SD:'Wordwall, Quizizz, dan Canva for Education dipadukan dengan Google Classroom untuk mendukung pembelajaran interaktif yang sesuai usia peserta didik.',
+  SMP:'Google Classroom, Quizizz, dan Canva digunakan untuk mendukung penyampaian materi, latihan, serta kolaborasi daring peserta didik.',
+  SMA:'Google Classroom, Quizizz, Canva, serta perangkat pengolah data sederhana (mis. Google Spreadsheet/Colab) dimanfaatkan sesuai kebutuhan mata pelajaran.'
+};
+
+const monthsID = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+// ---------- Build dynamic controls ----------
+const jenjangEl = document.getElementById('jenjang');
+const kelasEl = document.getElementById('kelas');
+const jumlahEl = document.getElementById('jumlahPertemuan');
+const pertemuanContainer = document.getElementById('pertemuanContainer');
+const dimensiGrid = document.getElementById('dimensiGrid');
+const meetingBadge = document.getElementById('meetingCountBadge');
+
+jenjangEl.addEventListener('change', () => {
+  const opts = kelasByJenjang[jenjangEl.value] || [];
+  kelasEl.innerHTML = opts.length
+    ? opts.map(k => `<option value="${k}">Kelas ${k}</option>`).join('')
+    : '<option value="">Pilih jenjang dahulu</option>';
+});
+
+function renderPertemuanRows(){
+  const n = Math.max(1, Math.min(20, parseInt(jumlahEl.value || '1', 10)));
+  jumlahEl.value = n;
+  meetingBadge.textContent = n;
+
+  const existing = [...pertemuanContainer.querySelectorAll('select')].map(s => s.value);
+  let html = '';
+  for(let i=1;i<=n;i++){
+    const prev = existing[i-1] || practiceOptions[0];
+    html += `
+      <div class="pertemuan-card">
+        <div class="pnum">Pertemuan ke-${i}</div>
+        <select data-idx="${i}" class="praktikSelect">
+          ${practiceOptions.map(p => `<option value="${p}" ${p===prev?'selected':''}>${p}</option>`).join('')}
+        </select>
+      </div>`;
+  }
+  pertemuanContainer.innerHTML = html;
+}
+jumlahEl.addEventListener('input', renderPertemuanRows);
+renderPertemuanRows();
+
+dimensiGrid.innerHTML = dimensiList.map((d,i) => `
+  <label class="chip" for="dim${i}">
+    <input type="checkbox" id="dim${i}" value="${d}" class="dimCheck">
+    <span>${d}</span>
+  </label>`).join('');
+
+dimensiGrid.querySelectorAll('.dimCheck').forEach(cb => {
+  cb.addEventListener('change', () => {
+    cb.closest('.chip').classList.toggle('checked', cb.checked);
+  });
+});
+
+// ---------- Generate document ----------
+const form = document.getElementById('rpmForm');
+const outputEl = document.getElementById('rpmOutput');
+const emptyState = document.getElementById('emptyState');
+const statusText = document.getElementById('statusText');
+const copyBtn = document.getElementById('copyBtn');
+const printBtn = document.getElementById('printBtn');
+
+function esc(s){
+  return (s || '').toString()
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function paragraphsFromLines(text){
+  return esc(text).split(/\n+/).filter(Boolean).map(l => `<p>${l}</p>`).join('');
+}
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const namaSekolah = document.getElementById('namaSekolah').value.trim();
+  const namaGuru = document.getElementById('namaGuru').value.trim();
+  const nipGuru = document.getElementById('nipGuru').value.trim();
+  const namaKepsek = document.getElementById('namaKepsek').value.trim();
+  const nipKepsek = document.getElementById('nipKepsek').value.trim();
+  const jenjang = jenjangEl.value;
+  const kelas = kelasEl.value;
+  const mapel = document.getElementById('mapel').value.trim();
+  const cp = document.getElementById('cp').value.trim();
+  const materi = document.getElementById('materi').value.trim();
+  const jumlah = parseInt(jumlahEl.value || '1', 10);
+  const durasi = document.getElementById('durasi').value.trim();
+  const dimensiTerpilih = [...document.querySelectorAll('.dimCheck:checked')].map(c => c.value);
+  const praktikPerPertemuan = [...document.querySelectorAll('.praktikSelect')].map(s => s.value);
+
+  if(!namaSekolah || !namaGuru || !nipGuru || !namaKepsek || !nipKepsek || !jenjang || !kelas || !mapel || !cp || !materi || !durasi){
+    alert('Mohon lengkapi seluruh isian bertanda (*) sebelum membuat RPM.');
+    return;
+  }
+  if(dimensiTerpilih.length === 0){
+    alert('Pilih minimal satu Dimensi Lulusan.');
+    return;
+  }
+
+  const materiFirstLine = materi.split('\n')[0];
+
+  // I. Identifikasi
+  const identifikasiSiswa = `Peserta didik Kelas ${esc(kelas)} jenjang ${esc(jenjang)} pada mata pelajaran ${esc(mapel)} di ${esc(namaSekolah)}, dengan karakteristik dan kesiapan belajar yang beragam sehingga pembelajaran dirancang secara fleksibel dan berdiferensiasi.`;
+  const identifikasiMateri = `Materi pembelajaran yang dibahas adalah <strong>${esc(materi)}</strong>, disampaikan dalam ${jumlah} kali pertemuan dengan durasi ${esc(durasi)} setiap pertemuan.`;
+  const dimensiListHTML = dimensiTerpilih.map(d => `<li><strong>${esc(d)}</strong> — ${esc(dimensiInfo[d])}</li>`).join('');
+
+  // II. Desain Pembelajaran
+  const lintasDisiplin = `Materi ${esc(materiFirstLine)} dapat dikaitkan dengan mata pelajaran lain, misalnya Bahasa Indonesia (literasi dan komunikasi hasil belajar), Matematika (numerasi dan penalaran logis), serta Informatika/TIK (pemanfaatan teknologi digital dalam proses belajar), sehingga memperkuat pemahaman peserta didik secara holistik dan kontekstual.`;
+  const tujuanPembelajaran = `Melalui rangkaian pembelajaran ini, peserta didik diharapkan mampu memahami dan menerapkan konsep <strong>${esc(materiFirstLine)}</strong> sesuai Capaian Pembelajaran yang ditetapkan, melalui pengalaman belajar yang berkesadaran, bermakna, dan menggembirakan.`;
+  const kemitraan = `Pembelajaran ini melibatkan kemitraan antara guru sebagai fasilitator, peserta didik sebagai pembelajar aktif, orang tua/wali sebagai pendukung proses belajar di rumah, serta rekan sejawat dan komunitas sekolah dalam berbagi sumber belajar dan umpan balik.`;
+  const lingkungan = `Pembelajaran dilaksanakan di ruang kelas/ruang praktik yang ditata secara fleksibel untuk mendukung kerja individu maupun kelompok, dalam suasana yang aman, nyaman, dan menyenangkan, serta memanfaatkan sumber belajar yang tersedia di lingkungan sekolah sesuai kebutuhan materi.`;
+  const digital = digitalByJenjang[jenjang] || digitalByJenjang.SMA;
+
+  const praktikTableRows = praktikPerPertemuan.map((p,i) => `
+    <tr>
+      <td>Pertemuan ke-${i+1}</td>
+      <td>${esc(p)}</td>
+      <td>${esc(practiceInfo[p].ringkas)}</td>
+    </tr>`).join('');
+
+  // III. Pengalaman Belajar
+  const meetingBlocks = praktikPerPertemuan.map((p,i) => {
+    const info = practiceInfo[p];
+    return `
+    <div class="meeting-block">
+      <h4>Pertemuan ke-${i+1} &mdash; Praktik Pedagogis: ${esc(p)} (${esc(durasi)})</h4>
+      <h4 class="sub" style="font-size:13px;color:#173430;">1. Kegiatan Awal <em>(Berkesadaran, Bermakna, Menggembirakan)</em></h4>
+      <p>Guru membuka pembelajaran dengan salam, doa, dan pengecekan kesiapan peserta didik (berkesadaran); mengaitkan materi ${esc(materiFirstLine)} dengan pengalaman atau kehidupan sehari-hari peserta didik (bermakna); serta melakukan apersepsi/ice breaking ringan agar suasana belajar terasa menyenangkan (menggembirakan).</p>
+      <h4 class="sub" style="font-size:13px;color:#173430;">2. Kegiatan Inti</h4>
+      <p><strong>a. Memahami</strong> <em>(Berkesadaran, Bermakna)</em> — Peserta didik ${esc(info.memahami)}, dengan bimbingan guru agar pemahaman terbangun secara sadar dan bermakna.</p>
+      <p><strong>b. Mengaplikasikan</strong> <em>(Berkesadaran, Bermakna)</em> — Peserta didik ${esc(info.aplikasi)}, sebagai bentuk penerapan konsep yang telah dipahami.</p>
+      <h4 class="sub" style="font-size:13px;color:#173430;">3. Refleksi <em>(Berkesadaran, Bermakna)</em></h4>
+      <p>Peserta didik dan guru melakukan refleksi bersama mengenai proses dan hasil belajar, mengidentifikasi hal yang sudah dipahami serta yang masih perlu diperdalam.</p>
+      <h4 class="sub" style="font-size:13px;color:#173430;">4. Penutup <em>(Berkesadaran)</em></h4>
+      <p>Guru menyimpulkan pembelajaran, memberikan apresiasi atas partisipasi peserta didik, dan menyampaikan rencana pertemuan berikutnya.</p>
+    </div>`;
+  }).join('');
+
+  // IV. Asesmen
+  const uniqueAsesmenProses = [...new Set(praktikPerPertemuan.map(p => practiceInfo[p].asesmen))];
+  const asesmenAwal = `Dilakukan melalui pertanyaan pemantik dan asesmen diagnostik ringan (lisan atau tertulis singkat) untuk mengetahui kesiapan awal peserta didik terhadap materi ${esc(materiFirstLine)} sebelum pembelajaran dimulai.`;
+  const asesmenProses = `Dilakukan secara berkelanjutan melalui observasi aktivitas peserta didik dan diskusi reflektif, dengan instrumen penilaian yang disesuaikan dengan praktik pedagogis pada tiap pertemuan, meliputi ${uniqueAsesmenProses.map(esc).join('; ')}.`;
+  const asesmenAkhir = `Penilaian akhir dilakukan melalui produk/tugas hasil belajar, presentasi, dan/atau portofolio yang mencerminkan pencapaian tujuan pembelajaran serta dimensi lulusan yang ditargetkan, yaitu ${dimensiTerpilih.map(esc).join(', ')}.`;
+
+  const now = new Date();
+  const tanggalPanjang = `${now.getDate()} ${monthsID[now.getMonth()]} ${now.getFullYear()}`;
+
+  const docHTML = `
+    <h2 class="doc-title">Rencana Pembelajaran Mendalam (RPM)</h2>
+    <p class="doc-sub">Disusun berdasarkan prinsip Deep Learning — Berkesadaran, Bermakna, Menggembirakan</p>
+
+    <table class="idtable">
+      <tr><td class="label">Satuan Pendidikan</td><td>${esc(namaSekolah)}</td></tr>
+      <tr><td class="label">Mata Pelajaran</td><td>${esc(mapel)}</td></tr>
+      <tr><td class="label">Kelas / Jenjang</td><td>${esc(kelas)} / ${esc(jenjang)}</td></tr>
+      <tr><td class="label">Materi Pembelajaran</td><td>${esc(materi)}</td></tr>
+      <tr><td class="label">Jumlah &amp; Durasi Pertemuan</td><td>${jumlah} kali pertemuan &times; ${esc(durasi)}</td></tr>
+    </table>
+
+    <h3 class="bab">I. Identifikasi</h3>
+    <h4 class="sub">A. Peserta Didik</h4>
+    <p>${identifikasiSiswa}</p>
+    <h4 class="sub">B. Materi Pelajaran</h4>
+    <p>${identifikasiMateri}</p>
+    <h4 class="sub">C. Capaian Dimensi Lulusan</h4>
+    <ul>${dimensiListHTML}</ul>
+
+    <h3 class="bab">II. Desain Pembelajaran</h3>
+    <h4 class="sub">A. Capaian Pembelajaran</h4>
+    ${paragraphsFromLines(cp)}
+    <h4 class="sub">B. Lintas Disiplin Ilmu</h4>
+    <p>${lintasDisiplin}</p>
+    <h4 class="sub">C. Tujuan Pembelajaran</h4>
+    <p>${tujuanPembelajaran}</p>
+    <h4 class="sub">D. Topik Pembelajaran</h4>
+    <p>${esc(materiFirstLine)}, dibahas secara bertahap sesuai alur pertemuan yang telah dirancang.</p>
+    <h4 class="sub">E. Praktik Pedagogis per Pertemuan</h4>
+    <table class="grid-table">
+      <tr><th>Pertemuan</th><th>Praktik Pedagogis</th><th>Deskripsi Singkat</th></tr>
+      ${praktikTableRows}
+    </table>
+    <h4 class="sub">F. Kemitraan Pembelajaran</h4>
+    <p>${kemitraan}</p>
+    <h4 class="sub">G. Lingkungan Pembelajaran</h4>
+    <p>${lingkungan}</p>
+    <h4 class="sub">H. Pemanfaatan Digital</h4>
+    <p>${digital}</p>
+
+    <h3 class="bab">III. Pengalaman Belajar</h3>
+    ${meetingBlocks}
+
+    <h3 class="bab">IV. Asesmen Pembelajaran</h3>
+    <h4 class="sub">A. Asesmen Awal (Diagnostik/Apersepsi)</h4>
+    <p>${asesmenAwal}</p>
+    <h4 class="sub">B. Asesmen Proses (Observasi, Rubrik, Diskusi)</h4>
+    <p>${asesmenProses}</p>
+    <h4 class="sub">C. Asesmen Akhir (Produk, Tugas, Presentasi, Portofolio)</h4>
+    <p>${asesmenAkhir}</p>
+
+    <div class="sig-wrap">
+      <p class="sig-date">&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;, ${tanggalPanjang}</p>
+      <table class="sig-table">
+        <tr>
+          <td>Mengetahui,<br>Kepala Sekolah</td>
+          <td class="right">Guru Mata Pelajaran</td>
+        </tr>
+        <tr><td colspan="2"><div class="sig-space"></div></td></tr>
+        <tr>
+          <td><span class="sig-name">${esc(namaKepsek)}</span><br>NIP. ${esc(nipKepsek)}</td>
+          <td class="right"><span class="sig-name">${esc(namaGuru)}</span><br>NIP. ${esc(nipGuru)}</td>
+        </tr>
+      </table>
+    </div>
+  `;
+
+  outputEl.innerHTML = docHTML;
+  outputEl.style.display = 'block';
+  emptyState.style.display = 'none';
+  copyBtn.style.display = 'inline-flex';
+  printBtn.style.display = 'inline-flex';
+  statusText.textContent = `RPM untuk ${mapel} — Kelas ${kelas} berhasil dibuat (${jumlah} pertemuan).`;
+  outputEl.scrollIntoView({behavior:'smooth', block:'start'});
+});
+
+// ---------- Copy formatted content ----------
+copyBtn.addEventListener('click', async () => {
+  try {
+    const range = document.createRange();
+    range.selectNodeContents(outputEl);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    const ok = document.execCommand('copy');
+    sel.removeAllRanges();
+    if(ok){
+      copyBtn.textContent = 'Tersalin ✓';
+      setTimeout(() => copyBtn.textContent = 'Salin RPM', 1800);
+      return;
+    }
+    throw new Error('execCommand failed');
+  } catch(err){
+    try{
+      const html = outputEl.innerHTML;
+      const text = outputEl.innerText;
+      const item = new ClipboardItem({
+        'text/html': new Blob([html], {type:'text/html'}),
+        'text/plain': new Blob([text], {type:'text/plain'})
+      });
+      await navigator.clipboard.write([item]);
+      copyBtn.textContent = 'Tersalin ✓';
+      setTimeout(() => copyBtn.textContent = 'Salin RPM', 1800);
+    }catch(e2){
+      alert('Penyalinan otomatis tidak didukung browser ini. Silakan blok teks secara manual lalu salin (Ctrl+C).');
+    }
+  }
+});
+
+printBtn.addEventListener('click', () => window.print());
+</script>
+</body>
+</html>
